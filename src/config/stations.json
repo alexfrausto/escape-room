@@ -1,0 +1,57 @@
+[
+	{
+		"id": "estacion001",
+		"code": "7419",
+		"type": "tumbler"
+	},
+	{
+		"id": "estacion002",
+		"code": "FUEGO-TIERRA-LUNA-AGUA",
+		"type": "cryptex"
+	},
+	{
+		"id": "estacion003",
+		"code": "D15-I30-D05",
+		"type": "safedial"
+	},
+	{
+		"id": "estacion004",
+		"code": "1-0-1-0-1",
+		"type": "breaker"
+	},
+	{
+		"id": "estacion005",
+		"code": "A-D-D-B-I",
+		"type": "compass"
+	},
+	{
+		"id": "estacion006",
+		"code": "2-5-3",
+		"type": "sliders"
+	},
+	{
+		"id": "estacion007",
+		"code": "ECLIPSE",
+		"type": "terminal"
+	},
+	{
+		"id": "estacion008",
+		"code": "1-5-9-8-7",
+		"type": "pattern"
+	},
+	{
+		"id": "estacion009",
+		"code": "A3-B1-C4-D2",
+		"type": "patchbay"
+	},
+	{
+		"id": "estacion010",
+		"code": "104.5",
+		"type": "frequency"
+	},
+	{
+		"id": "estacion011",
+		"code": "FA-LA-SI-FA-LA-SI",
+		"type": "piano"
+	}
+]
