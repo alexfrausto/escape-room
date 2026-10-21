@@ -1,0 +1,17 @@
+# Cache immutable hashed assets for 1 year
+/_app/immutable/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Ensure service worker is always fresh and never cached by edge or browser
+/service-worker.js
+  Cache-Control: no-cache, no-store, must-revalidate
+  Service-Worker-Allowed: /
+
+# Web manifest
+/manifest.webmanifest
+  Cache-Control: no-cache, no-store, must-revalidate
+  Content-Type: application/manifest+json
+
+# Icons
+/favicon.svg
+  Cache-Control: public, max-age=86400
