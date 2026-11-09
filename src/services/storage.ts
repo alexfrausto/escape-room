@@ -24,15 +24,21 @@ function loadInitialState(): TeamProgress {
 		if (raw) {
 			const parsed = JSON.parse(raw);
 			const gameStarted = typeof parsed.gameStarted === 'boolean' ? parsed.gameStarted : false;
+			const stationIdMap = new Map(STATIONS.map((s) => [s.id.toLowerCase(), s.id]));
+			const rawUnlocked = Array.isArray(parsed.unlockedStationIds)
+				? parsed.unlockedStationIds
+				: [];
+			const cleanUnlocked = rawUnlocked
+				.map((id: unknown) => (typeof id === 'string' ? stationIdMap.get(id.toLowerCase()) : null))
+				.filter((id: string | null | undefined): id is string => Boolean(id));
+
 			return {
 				teamName: typeof parsed.teamName === 'string' ? parsed.teamName : '',
 				gameStarted,
 				elapsedSeconds: typeof parsed.elapsedSeconds === 'number' ? parsed.elapsedSeconds : 0,
 				timerRunning:
 					typeof parsed.timerRunning === 'boolean' ? parsed.timerRunning && gameStarted : false,
-				unlockedStationIds: Array.isArray(parsed.unlockedStationIds)
-					? parsed.unlockedStationIds
-					: [],
+				unlockedStationIds: Array.from(new Set(cleanUnlocked)),
 				lastUpdated: parsed.lastUpdated || Date.now(),
 				startedAt: parsed.startedAt || null
 			};
@@ -106,29 +112,42 @@ function createGameStore() {
 		setTeamName(teamName: string) {
 			sync((s) => ({ ...s, teamName: teamName.trim() }));
 		},
-		unlockStation(stationId: LockType) {
+		unlockStation(stationId: string) {
+			const canonicalId =
+				STATIONS.find((s) => s.id.toLowerCase() === stationId.trim().toLowerCase())?.id ||
+				stationId;
 			sync((s) => {
-				if (s.unlockedStationIds.includes(stationId)) return s;
+				if (s.unlockedStationIds.includes(canonicalId)) return s;
 				return {
 					...s,
-					unlockedStationIds: [...s.unlockedStationIds, stationId]
+					unlockedStationIds: [...s.unlockedStationIds, canonicalId]
 				};
 			});
 		},
-		lockStation(stationId: LockType) {
+		lockStation(stationId: string) {
+			const canonicalId =
+				STATIONS.find((s) => s.id.toLowerCase() === stationId.trim().toLowerCase())?.id ||
+				stationId;
 			sync((s) => ({
 				...s,
-				unlockedStationIds: s.unlockedStationIds.filter((id) => id !== stationId)
+				unlockedStationIds: s.unlockedStationIds.filter(
+					(id) => id.toLowerCase() !== canonicalId.toLowerCase()
+				)
 			}));
 		},
-		toggleStation(stationId: LockType) {
+		toggleStation(stationId: string) {
+			const canonicalId =
+				STATIONS.find((s) => s.id.toLowerCase() === stationId.trim().toLowerCase())?.id ||
+				stationId;
 			sync((s) => {
-				const isUnlocked = s.unlockedStationIds.includes(stationId);
+				const isUnlocked = s.unlockedStationIds.some(
+					(id) => id.toLowerCase() === canonicalId.toLowerCase()
+				);
 				return {
 					...s,
 					unlockedStationIds: isUnlocked
-						? s.unlockedStationIds.filter((id) => id !== stationId)
-						: [...s.unlockedStationIds, stationId]
+						? s.unlockedStationIds.filter((id) => id.toLowerCase() !== canonicalId.toLowerCase())
+						: [...s.unlockedStationIds, canonicalId]
 				};
 			});
 		},

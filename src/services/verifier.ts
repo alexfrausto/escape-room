@@ -15,8 +15,9 @@ export function normalizeInput(input: string): string {
  * Retrieves a station definition by its unique LockType ID.
  */
 export function getStationById(id: string): StationDefinition | undefined {
+	if (!id || typeof id !== 'string') return undefined;
 	const normalizedId = id.trim().toLowerCase();
-	return STATIONS.find((s) => s.id === normalizedId);
+	return STATIONS.find((s) => s.id.toLowerCase() === normalizedId);
 }
 
 /**
@@ -27,14 +28,14 @@ export function getAllStations(): StationDefinition[] {
 }
 
 /**
- * Extracts and matches a station from id
+ * Extracts and matches a station from id or qr payload
  */
 export function getStationByQr(qrText: string): StationDefinition | undefined {
 	if (!qrText || typeof qrText !== 'string') return undefined;
 
-	const cleaned = qrText.trim().toUpperCase();
+	const cleaned = qrText.trim().toLowerCase();
 
-	const idMatch = STATIONS.find((s) => s.id.toUpperCase() === cleaned);
+	const idMatch = STATIONS.find((s) => s.id.toLowerCase() === cleaned);
 	if (idMatch) return idMatch;
 
 	return undefined;

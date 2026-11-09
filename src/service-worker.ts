@@ -69,46 +69,34 @@ self.addEventListener('fetch', (event) => {
 	const url = new URL(event.request.url);
 	if (!url.protocol.startsWith('http')) return;
 
-	// Navigation requests (HTML document shell)
+	// Navigation requests (HTML document shell): Network-first with instant offline cache fallback
 	if (event.request.mode === 'navigate') {
 		event.respondWith(
 			(async () => {
-				// 1. Try cache first for instant offline mobile load
 				const rootPath = resolve('/');
-				const cachedShell = (await caches.match(event.request)) || (await caches.match(rootPath));
-				if (cachedShell) {
-					// Non-blocking background network refresh if online
-					event.waitUntil(
-						fetch(event.request)
-							.then(async (response) => {
-								if (response.ok) {
-									const cache = await caches.open(CACHE_NAME);
-									await cache.put(event.request, response);
-								}
-							})
-							.catch(() => {
-								// Offline - expected in escape rooms
-							})
-					);
-					return cachedShell;
-				}
 
-				// 2. If not yet in cache (initial first load), fetch from network and cache
+				// 1. Try network first when online to immediately receive deployments and updated codes
 				try {
 					const networkResponse = await fetch(event.request);
 					if (networkResponse.ok) {
 						const cache = await caches.open(CACHE_NAME);
 						cache.put(event.request, networkResponse.clone());
+						return networkResponse;
 					}
-					return networkResponse;
 				} catch {
-					const fallback = await caches.match(rootPath);
-					if (fallback) return fallback;
-					return new Response('Terminal offline. Conexión requerida una vez.', {
-						status: 503,
-						headers: { 'Content-Type': 'text/plain; charset=utf-8' }
-					});
+					// Network failed or offline - fall through to offline cache
 				}
+
+				// 2. Offline fallback: serve cached shell
+				const cachedShell = (await caches.match(event.request)) || (await caches.match(rootPath));
+				if (cachedShell) {
+					return cachedShell;
+				}
+
+				return new Response('Terminal offline. Conexión requerida una vez.', {
+					status: 503,
+					headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+				});
 			})()
 		);
 		return;
