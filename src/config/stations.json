@@ -1,41 +1,41 @@
 [
 	{
-		"id": "b40fe819",
+		"id": "B40FE819",
 		"code": "9512180",
 		"type": "tumbler"
 	},
 	{
-		"id": "e2f1d749",
+		"id": "E2F1D749",
 		"code": "AGUA-LUNA-TIERRA-AIRE",
 		"type": "cryptex"
 	},
 	{
-		"id": "eb217ff8",
+		"id": "EB217FF8",
 		"code": "1-0-0-1-1",
 		"type": "breaker"
 	},
 	{
-		"id": "280be487",
+		"id": "280BE487",
 		"code": "16TM27S5",
 		"type": "terminal"
 	},
 	{
-		"id": "2e66f1a3",
+		"id": "2E66F1A3",
 		"code": "3-5-9-6-2-4-7",
 		"type": "pattern"
 	},
 	{
-		"id": "2c80ac4f",
+		"id": "2C80AC4F",
 		"code": "A5-B4-C2-D1-E3",
 		"type": "patchbay"
 	},
 	{
-		"id": "ca920d29",
+		"id": "CA920D29",
 		"code": "DO-MI-SOL-LA-DO-RE-FA-SI",
 		"type": "piano"
 	},
 	{
-		"id": "0d87f6d2",
+		"id": "0D87F6D2",
 		"code": "enrvy",
 		"type": "glyphs"
 	}
