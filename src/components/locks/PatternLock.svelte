@@ -124,14 +124,14 @@
 	onMount(async () => {
 		await tick();
 		if (isUnlocked) {
-			selectedNodes = parseTargetNodes(targetCode || '1-5-9-8-7');
+			selectedNodes = parseTargetNodes(targetCode || '3-5-9-6-2-4-7');
 		}
 	});
 
 	$effect(() => {
 		if (isUnlocked) {
 			untrack(() => {
-				selectedNodes = parseTargetNodes(targetCode || '1-5-9-8-7');
+				selectedNodes = parseTargetNodes(targetCode || '3-5-9-6-2-4-7');
 			});
 		}
 	});

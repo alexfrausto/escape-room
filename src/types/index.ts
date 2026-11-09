@@ -10,6 +10,8 @@ export type LockType =
 	| 'patchbay'
 	| 'frequency'
 	| 'piano'
+	| 'rotors'
+	| 'glyphs'
 	| string;
 
 export interface StationDefinition {

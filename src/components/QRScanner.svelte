@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
+	import { onDestroy, tick, untrack } from 'svelte';
 	import type { Html5Qrcode } from 'html5-qrcode';
 	import { getStationByQr } from '../services/verifier';
 	import type { StationDefinition } from '../types';
@@ -16,15 +16,36 @@
 	let scannerElementId = 'cypher-qr-reader';
 	let html5QrCode: Html5Qrcode | null = null;
 	let isScanning = $state<boolean>(false);
+	let isVisible = $state<boolean>(false);
+	let isStarting = false;
+	let isStopping = false;
 	let errorMessage = $state<string | null>(null);
 	let scannedFeedback = $state<string | null>(null);
 
 	async function startScanner() {
+		if (isStarting || isScanning) return;
+		isStarting = true;
 		errorMessage = null;
 		scannedFeedback = null;
 
 		try {
+			await tick();
+			const container = document.getElementById(scannerElementId);
+			if (!container) {
+				console.warn('[QRScanner] Container not found in DOM');
+				isStarting = false;
+				return;
+			}
+
+			// Clean existing container content
+			container.innerHTML = '';
+
 			const { Html5Qrcode, Html5QrcodeSupportedFormats } = await import('html5-qrcode');
+
+			if (html5QrCode) {
+				await stopScanner();
+			}
+
 			html5QrCode = new Html5Qrcode(scannerElementId, {
 				formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
 				verbose: false
@@ -46,7 +67,7 @@
 			isScanning = true;
 		} catch (err: unknown) {
 			console.warn('[QRScanner] Camera start error:', err);
-			// Try fallback to any available camera if environment camera fails
+			// Try fallback to any available camera (e.g. front camera on laptop)
 			try {
 				if (html5QrCode) {
 					await html5QrCode.start(
@@ -60,9 +81,11 @@
 				}
 			} catch (fallbackErr: unknown) {
 				const error = fallbackErr instanceof Error ? fallbackErr.message : String(fallbackErr);
-				errorMessage = `Camera access error: ${error}. You may use manual sector input below.`;
+				errorMessage = `Error de cámara: ${error}. Puedes usar acceso manual.`;
 				isScanning = false;
 			}
+		} finally {
+			isStarting = false;
 		}
 	}
 
@@ -76,7 +99,7 @@
 			});
 		} else {
 			audio.play('error');
-			scannedFeedback = `Unrecognized Cypher code: "${decodedText}"`;
+			scannedFeedback = `Código no reconocido: "${decodedText}"`;
 			setTimeout(() => {
 				if (scannedFeedback) scannedFeedback = null;
 			}, 3000);
@@ -88,55 +111,77 @@
 	}
 
 	async function stopScanner() {
-		if (html5QrCode && isScanning) {
-			try {
-				await html5QrCode.stop();
-				html5QrCode.clear();
-			} catch (err) {
-				console.warn('[QRScanner] Stop scanner error:', err);
+		if (isStopping) return;
+		isStopping = true;
+
+		try {
+			if (html5QrCode) {
+				try {
+					const state = html5QrCode.getState?.();
+					// Html5QrcodeScannerState: 2 is SCANNING, 3 is PAUSED
+					if (html5QrCode.isScanning || state === 2 || state === 3) {
+						await html5QrCode.stop();
+					}
+				} catch (err) {
+					console.warn('[QRScanner] Stop scanner error:', err);
+				}
+
+				try {
+					const container = document.getElementById(scannerElementId);
+					if (container) {
+						html5QrCode.clear();
+					}
+				} catch (err) {
+					console.warn('[QRScanner] Clear error:', err);
+				}
+
+				html5QrCode = null;
 			}
+		} finally {
 			isScanning = false;
+			isStopping = false;
 		}
 	}
 
 	function handleClose() {
 		audio.play('click');
-		stopScanner().then(() => {
-			onClose();
-		});
+		onClose();
 	}
 
-	onMount(() => {
+	$effect(() => {
 		if (isOpen) {
-			startScanner();
+			isVisible = true;
+			untrack(() => {
+				startScanner();
+			});
+		} else {
+			untrack(() => {
+				stopScanner().then(() => {
+					isVisible = false;
+				});
+			});
 		}
 	});
 
 	onDestroy(() => {
 		stopScanner();
 	});
-
-	$effect(() => {
-		if (isOpen && !isScanning && !errorMessage) {
-			startScanner();
-		}
-	});
 </script>
 
-{#if isOpen}
+{#if isVisible}
 	<div class="fixed inset-0 z-50 flex flex-col bg-black/50 backdrop-blur-md">
 		<!-- Scanner Top Header -->
 		<div class="flex items-center justify-between border-b border-emerald-800 px-4 py-3">
 			<div class="flex items-center gap-2">
 				<div class="h-2 w-2 animate-ping rounded-full bg-emerald-500"></div>
 				<h2 class="font-mono text-sm font-bold tracking-widest text-emerald-400">
-					QR SCANNER
+					ESCANER QR
 				</h2>
 			</div>
 
 			<button
 				type="button"
-				class="rounded border border-neutral-700 bg-neutral-900 px-3 py-1 font-mono text-xs font-bold"
+				class="rounded border border-neutral-700 bg-neutral-900 px-3 py-1 font-mono text-xs font-bold hover:bg-neutral-800 cursor-pointer text-neutral-200"
 				onclick={handleClose}
 			>
 				[ ✕ CERRAR ]

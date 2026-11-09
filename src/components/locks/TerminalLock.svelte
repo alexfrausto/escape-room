@@ -12,23 +12,23 @@
 
 	let { targetCode, isUnlocked = false, isLockedOut = false, onSubmit }: Props = $props();
 
-	const MAX_LENGTH = 10;
+	const MAX_LENGTH = 12;
 
-	// 16-Letter Tactical Matrix (4x4 Grid)
-	// Contains all required target letters (C, E, I, L, P, S for ECLIPSE) + balanced alphabet
-	const LETTERS = [
-		'A', 'B', 'C', 'D',
-		'E', 'F', 'G', 'H',
-		'I', 'L', 'M', 'N',
-		'O', 'P', 'R', 'S'
+	// 16-Key Tactical Matrix (4x4 Grid)
+	// Contains all required target characters (1, 6, T, M, 2, 7, S, 5) + tactical alphanumeric mix
+	const KEYS = [
+		'1', '2', '3', '4',
+		'5', '6', '7', '8',
+		'A', 'K', 'M', 'R',
+		'S', 'T', 'X', 'Z'
 	];
 
 	let enteredText = $state<string>('');
 
-	function typeLetter(letter: string) {
+	function typeChar(char: string) {
 		if (isLockedOut || isUnlocked || enteredText.length >= MAX_LENGTH) return;
 
-		enteredText += letter;
+		enteredText += char;
 		audio.play('beep');
 		audio.vibrate(10);
 	}
@@ -60,11 +60,11 @@
 			if (enteredText.trim()) {
 				onSubmit(enteredText.trim().toUpperCase());
 			}
-		} else if (/^[a-zA-Z]$/.test(e.key)) {
+		} else if (/^[a-zA-Z0-9]$/.test(e.key)) {
 			const char = e.key.toUpperCase();
-			if (LETTERS.includes(char)) {
+			if (KEYS.includes(char)) {
 				e.preventDefault();
-				typeLetter(char);
+				typeChar(char);
 			}
 		}
 	}
@@ -81,14 +81,14 @@
 	onMount(async () => {
 		await tick();
 		if (isUnlocked) {
-			enteredText = targetCode || 'ECLIPSE';
+			enteredText = targetCode || '16TM27S5';
 		}
 	});
 
 	$effect(() => {
 		if (isUnlocked) {
 			untrack(() => {
-				enteredText = targetCode || 'ECLIPSE';
+				enteredText = targetCode || '16TM27S5';
 			});
 		}
 	});
@@ -166,16 +166,16 @@
 			</div>
 		</div>
 
-		<!-- 16-Letter Keypad Matrix (4x4 Grid) -->
+		<!-- 16-Key Keypad Matrix (4x4 Grid) -->
 		<div class="mt-4 grid grid-cols-4 gap-2 sm:gap-2.5 rounded-2xl border border-neutral-800 bg-neutral-950 p-2.5 sm:p-3 shadow-inner">
-			{#each LETTERS as letter}
+			{#each KEYS as key}
 				<button
 					type="button"
 					disabled={isLockedOut || isUnlocked || enteredText.length >= MAX_LENGTH}
-					onclick={() => typeLetter(letter)}
+					onclick={() => typeChar(key)}
 					class="btn-tactile flex items-center justify-center h-12 sm:h-14 rounded-xl border border-neutral-800 bg-neutral-900 font-mono text-base sm:text-lg font-black text-neutral-100 shadow hover:border-amber-500 hover:text-amber-300 hover:bg-neutral-800 active:scale-95 disabled:opacity-25 disabled:cursor-not-allowed cursor-pointer transition select-none"
 				>
-					{letter}
+					{key}
 				</button>
 			{/each}
 		</div>

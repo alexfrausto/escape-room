@@ -17,7 +17,7 @@
 			const parts = targetCode.split('-').map((s) => (s.trim() === '1' ? 1 : 0));
 			if (parts.length >= 5) return parts.slice(0, 5);
 		}
-		return [1, 0, 1, 0, 1];
+		return [1, 0, 0, 1, 1];
 	}
 
 	// 5 toggle switches: 1 for UP, 0 for DOWN

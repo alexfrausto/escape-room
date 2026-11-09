@@ -9,7 +9,9 @@ export const LOCK_INSTRUCTIONS: Record<string, string> = {
 	pattern: 'Traza el patrón correcto uniendo los nodos en secuencia.',
 	patchbay: 'Conecta los cables de conexión a los puertos de destino correspondientes.',
 	frequency: 'Sintoniza la frecuencia exacta hasta alinear la señal del osciloscopio.',
-	piano: 'Toca la secuencia de notas en el teclado según la partitura.'
+	piano: 'Toca la secuencia de notas en el teclado según la partitura.',
+	rotors: 'Alinea los rotores criptográficos con la combinación de letras correcta.',
+	glyphs: 'Coloca los sellos correspondientes según la clave.'
 };
 
 export function getLockInstruction(type: string): string {

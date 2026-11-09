@@ -122,6 +122,10 @@ export function verifyStationCode(stationId: LockType | string, input: string): 
 
 	if (!isMatch) {
 		switch (station.type) {
+			case 'tumbler':
+			case '1':
+				isMatch = normalizedInput.replace(/\D/g, '') === normalizedTarget.replace(/\D/g, '');
+				break;
 			case 'cryptex':
 			case '2':
 				isMatch = normalizeElementalString(normalizedInput) === normalizeElementalString(normalizedTarget);
@@ -129,6 +133,10 @@ export function verifyStationCode(stationId: LockType | string, input: string): 
 			case 'safedial':
 			case '3':
 				isMatch = normalizeSafeDialString(normalizedInput) === normalizeSafeDialString(normalizedTarget);
+				break;
+			case 'breaker':
+			case '4':
+				isMatch = normalizedInput.replace(/[^\d]/g, '') === normalizedTarget.replace(/[^\d]/g, '');
 				break;
 			case 'compass':
 			case '5':
@@ -154,6 +162,14 @@ export function verifyStationCode(stationId: LockType | string, input: string): 
 				const nInput = normalizeMusicNotes(normalizedInput);
 				const nTarget = normalizeMusicNotes(normalizedTarget);
 				isMatch = nInput.length > 0 && nInput === nTarget;
+				break;
+			}
+			case 'rotors':
+			case 'glyphs':
+			case '12': {
+				const rInput = normalizedInput.toLowerCase().replace(/[^a-z]/g, '');
+				const rTarget = normalizedTarget.toLowerCase().replace(/[^a-z]/g, '');
+				isMatch = rInput.length > 0 && rInput === rTarget;
 				break;
 			}
 		}

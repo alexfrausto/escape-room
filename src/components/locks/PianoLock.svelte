@@ -41,8 +41,8 @@
 		12.5 * 5.7  // A#
 	];
 
-	const targetNotesList = $derived(parseTargetNotes(targetCode || 'FA-LA-SI-FA-LA-SI'));
-	const expectedCount = $derived(targetNotesList.length || 6);
+	const targetNotesList = $derived(parseTargetNotes(targetCode || 'DO-MI-SOL-LA-DO-RE-FA-SI'));
+	const expectedCount = $derived(targetNotesList.length || 8);
 	const noteSpacing = $derived(Math.min(32, Math.floor(230 / Math.max(1, expectedCount))));
 
 	let playedNotes = $state<PianoKey[]>([]);
@@ -132,9 +132,17 @@
 			? cleaned.split('-').map((p) => p.trim())
 			: cleaned.match(/(DO|RE|MI|FA|SOL|LA|SI|[CDEFGAB])/g) || [];
 
-		for (const part of parts) {
+		for (let i = 0; i < parts.length; i++) {
+			const part = parts[i];
+			if ((part === 'DO' || part === 'C') && i > 0) {
+				const prev = parts[i - 1];
+				if (prev === 'LA' || prev === 'SOL' || prev === 'SI' || prev === 'FA') {
+					result.push(WHITE_KEYS[7]); // High C5
+					continue;
+				}
+			}
 			const found = WHITE_KEYS.find(
-				(k) => k.latin === part || k.anglo === part
+				(k) => k.latin === part || k.anglo === part || k.id === part
 			);
 			if (found) {
 				result.push(found);
@@ -156,14 +164,14 @@
 	onMount(async () => {
 		await tick();
 		if (isUnlocked) {
-			playedNotes = parseTargetNotes(targetCode || 'FA-LA-SI-FA-LA-SI');
+			playedNotes = parseTargetNotes(targetCode || 'DO-MI-SOL-LA-DO-RE-FA-SI');
 		}
 	});
 
 	$effect(() => {
 		if (isUnlocked) {
 			untrack(() => {
-				playedNotes = parseTargetNotes(targetCode || 'FA-LA-SI-FA-LA-SI');
+				playedNotes = parseTargetNotes(targetCode || 'DO-MI-SOL-LA-DO-RE-FA-SI');
 			});
 		}
 	});

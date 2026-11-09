@@ -18,6 +18,8 @@
 	import PatchbayLock from './locks/PatchbayLock.svelte';
 	import FrequencyLock from './locks/FrequencyLock.svelte';
 	import PianoLock from './locks/PianoLock.svelte';
+	import RotorsLock from './locks/RotorsLock.svelte';
+	import GlyphsLock from './locks/GlyphsLock.svelte';
 
 	interface Props {
 		isOpen: boolean;
@@ -251,6 +253,13 @@
 				/>
 			{:else if station.type === 'piano' || station.type === '11'}
 				<PianoLock
+					targetCode={station.code}
+					isUnlocked={isAlreadyUnlocked}
+					{isLockedOut}
+					onSubmit={handleCodeAttempt}
+				/>
+			{:else if station.type === 'glyphs' || station.type === 'relics' || station.type === 'altar' || station.type === 'rotors' || station.type === '12'}
+				<GlyphsLock
 					targetCode={station.code}
 					isUnlocked={isAlreadyUnlocked}
 					{isLockedOut}

@@ -15,7 +15,7 @@
 		{#each stations as station, i (station.id)}
 			{@const isUnlocked = $gameStore.unlockedStationIds.includes(station.id)}
 			<div class="flex flex-col items-center justify-center rounded-lg border p-3 gap-1 { isUnlocked
-				? 'bordr-emerald-500/60 bg-emerald-950/40 text-emerald-400'
+				? 'border-emerald-500/60 bg-emerald-950/40 text-emerald-400'
 				: 'border-neutral-800 bg-neutral-900/80 text-neutral-400' }">
 				{#if isUnlocked}
 					<LockKeyholeOpen size={72} />

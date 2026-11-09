@@ -1,57 +1,42 @@
 [
 	{
-		"id": "estacion001",
-		"code": "7419",
+		"id": "b40fe819",
+		"code": "9512180",
 		"type": "tumbler"
 	},
 	{
-		"id": "estacion002",
-		"code": "FUEGO-TIERRA-LUNA-AGUA",
+		"id": "e2f1d749",
+		"code": "AGUA-LUNA-TIERRA-AIRE",
 		"type": "cryptex"
 	},
 	{
-		"id": "estacion003",
-		"code": "D15-I30-D05",
-		"type": "safedial"
-	},
-	{
-		"id": "estacion004",
-		"code": "1-0-1-0-1",
+		"id": "eb217ff8",
+		"code": "1-0-0-1-1",
 		"type": "breaker"
 	},
 	{
-		"id": "estacion005",
-		"code": "A-D-D-B-I",
-		"type": "compass"
-	},
-	{
-		"id": "estacion006",
-		"code": "2-5-3",
-		"type": "sliders"
-	},
-	{
-		"id": "estacion007",
-		"code": "ECLIPSE",
+		"id": "280be487",
+		"code": "16TM27S5",
 		"type": "terminal"
 	},
 	{
-		"id": "estacion008",
-		"code": "1-5-9-8-7",
+		"id": "2e66f1a3",
+		"code": "3-5-9-6-2-4-7",
 		"type": "pattern"
 	},
 	{
-		"id": "estacion009",
-		"code": "A3-B1-C4-D2",
+		"id": "2c80ac4f",
+		"code": "A5-B4-C2-D1-E3",
 		"type": "patchbay"
 	},
 	{
-		"id": "estacion010",
-		"code": "104.5",
-		"type": "frequency"
+		"id": "ca920d29",
+		"code": "DO-MI-SOL-LA-DO-RE-FA-SI",
+		"type": "piano"
 	},
 	{
-		"id": "estacion011",
-		"code": "FA-LA-SI-FA-LA-SI",
-		"type": "piano"
+		"id": "0d87f6d2",
+		"code": "enrvy",
+		"type": "glyphs"
 	}
 ]

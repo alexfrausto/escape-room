@@ -20,25 +20,28 @@
 	}
 
 	const OUTPUT_JACKS: JackDef[] = [
-		{ id: 'A', label: 'A', x: 45, color: '#f59e0b' },
-		{ id: 'B', label: 'B', x: 121, color: '#10b981' },
-		{ id: 'C', label: 'C', x: 198, color: '#38bdf8' },
-		{ id: 'D', label: 'D', x: 275, color: '#c084fc' }
+		{ id: 'A', label: 'A', x: 36, color: '#f59e0b' },
+		{ id: 'B', label: 'B', x: 98, color: '#10b981' },
+		{ id: 'C', label: 'C', x: 160, color: '#38bdf8' },
+		{ id: 'D', label: 'D', x: 222, color: '#c084fc' },
+		{ id: 'E', label: 'E', x: 284, color: '#f43f5e' }
 	];
 
 	const INPUT_SOCKETS: { id: string; label: string; x: number }[] = [
-		{ id: '1', label: '1', x: 45 },
-		{ id: '2', label: '2', x: 121 },
-		{ id: '3', label: '3', x: 198 },
-		{ id: '4', label: '4', x: 275 }
+		{ id: '1', label: '1', x: 36 },
+		{ id: '2', label: '2', x: 98 },
+		{ id: '3', label: '3', x: 160 },
+		{ id: '4', label: '4', x: 222 },
+		{ id: '5', label: '5', x: 284 }
 	];
 
-	// Mapping: Jack ID ('A'..'D') -> Socket ID ('1'..'4') or null
+	// Mapping: Jack ID ('A'..'E') -> Socket ID ('1'..'5') or null
 	let connections = $state<Record<string, string | null>>({
 		A: null,
 		B: null,
 		C: null,
-		D: null
+		D: null,
+		E: null
 	});
 
 	let activeJackId = $state<string | null>(null);
@@ -110,10 +113,10 @@
 	}
 
 	function parseTargetConnections(code: string): Record<string, string | null> {
-		const result: Record<string, string | null> = { A: null, B: null, C: null, D: null };
+		const result: Record<string, string | null> = { A: null, B: null, C: null, D: null, E: null };
 		const parts = code.split('-').map((p) => p.trim().toUpperCase());
 		for (const part of parts) {
-			const match = part.match(/^([A-D])([1-4])$/);
+			const match = part.match(/^([A-E])([1-5])$/);
 			if (match) {
 				result[match[1]] = match[2];
 			}
@@ -125,7 +128,7 @@
 	$effect(() => {
 		if (isLockedOut) {
 			untrack(() => {
-				connections = { A: null, B: null, C: null, D: null };
+				connections = { A: null, B: null, C: null, D: null, E: null };
 				activeJackId = null;
 			});
 		}
@@ -134,14 +137,14 @@
 	onMount(async () => {
 		await tick();
 		if (isUnlocked) {
-			connections = parseTargetConnections(targetCode || 'A3-B1-C4-D2');
+			connections = parseTargetConnections(targetCode || 'A5-B4-C2-D1-E3');
 		}
 	});
 
 	$effect(() => {
 		if (isUnlocked) {
 			untrack(() => {
-				connections = parseTargetConnections(targetCode || 'A3-B1-C4-D2');
+				connections = parseTargetConnections(targetCode || 'A5-B4-C2-D1-E3');
 			});
 		}
 	});
@@ -198,7 +201,7 @@
 
 						<!-- Output Jack Socket -->
 						<div
-							class="relative flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-200 {isSelected
+							class="relative flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full border-2 transition-all duration-200 {isSelected
 								? 'border-amber-400 bg-amber-950/40 shadow-[0_0_15px_rgba(245,158,11,0.5)] scale-105'
 								: isPlugged
 									? 'border-neutral-700 bg-neutral-900'
@@ -206,7 +209,7 @@
 						>
 							<!-- Metal Jack Bezel Core -->
 							<div
-								class="h-5 w-5 rounded-full border border-neutral-700 shadow-inner flex items-center justify-center"
+								class="h-4.5 w-4.5 sm:h-5 sm:w-5 rounded-full border border-neutral-700 shadow-inner flex items-center justify-center"
 								style="background-color: {isPlugged ? jack.color : '#171717'}"
 							>
 								<div class="h-2 w-2 rounded-full bg-black"></div>
@@ -271,14 +274,14 @@
 					>
 						<!-- Input Socket Receiver -->
 						<div
-							class="relative flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-200 {pluggedJack
+							class="relative flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full border-2 transition-all duration-200 {pluggedJack
 								? 'border-neutral-700 bg-neutral-900 shadow-md'
 								: activeJackId
 									? 'border-amber-500/80 bg-amber-950/20 animate-pulse hover:border-amber-400'
 									: 'border-neutral-800 bg-black hover:border-neutral-600'}"
 						>
 							<div
-								class="h-5 w-5 rounded-full border border-neutral-700 shadow-inner flex items-center justify-center"
+								class="h-4.5 w-4.5 sm:h-5 sm:w-5 rounded-full border border-neutral-700 shadow-inner flex items-center justify-center"
 								style="background-color: {pluggedJack ? pluggedJack.color : '#171717'}"
 							>
 								<div class="h-2 w-2 rounded-full bg-black"></div>

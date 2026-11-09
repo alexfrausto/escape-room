@@ -13,6 +13,10 @@
 
 	let { targetCode, isUnlocked = false, isLockedOut = false, onSubmit }: Props = $props();
 
+	const numDigits = $derived(
+		targetCode ? Math.max(1, targetCode.replace(/\D/g, '').length) : 4
+	);
+
 	function getTargetDigits(): number[] {
 		if (targetCode) {
 			const parsed = targetCode
@@ -20,15 +24,20 @@
 				.split('')
 				.map((d) => parseInt(d, 10))
 				.filter((n) => !isNaN(n));
-			if (parsed.length >= 4) {
-				return parsed.slice(0, 4);
+			if (parsed.length > 0) {
+				return parsed;
 			}
 		}
-		return [0, 0, 0, 0];
+		return Array(numDigits).fill(0);
 	}
 
-	// 4 digits state [0-9]
-	let digits = $state<number[]>([0, 0, 0, 0]);
+	function getInitialDigits(): number[] {
+		const len = targetCode ? Math.max(1, targetCode.replace(/\D/g, '').length) : 4;
+		return Array(len).fill(0);
+	}
+
+	// Dynamic digits state [0-9]
+	let digits = $state<number[]>(getInitialDigits());
 
 	// Item height in pixels for each digit row
 	const ITEM_HEIGHT = 56;
@@ -37,21 +46,21 @@
 	// Total items = 50 (0..9 repeated 5 times; middle range is index 20..29)
 	const MIDDLE_OFFSET = 20;
 
-	// References to reel elements for each of the 4 cylinders
-	let reelRefs: (HTMLDivElement | null)[] = [null, null, null, null];
-	let isAnimating: boolean[] = [false, false, false, false];
+	// References to reel elements for each cylinder
+	let reelRefs = $state<(HTMLDivElement | null)[]>([]);
+	let isAnimating: boolean[] = [];
 
 	// Pointer drag & velocity tracking per cylinder
-	let dragStartY: number[] = [0, 0, 0, 0];
-	let dragStartReelY: number[] = [0, 0, 0, 0];
-	let lastPointerY: number[] = [0, 0, 0, 0];
-	let lastPointerTime: number[] = [0, 0, 0, 0];
-	let lastVelocity: number[] = [0, 0, 0, 0];
-	let isDragging: boolean[] = [false, false, false, false];
+	let dragStartY: number[] = [];
+	let dragStartReelY: number[] = [];
+	let lastPointerY: number[] = [];
+	let lastPointerTime: number[] = [];
+	let lastVelocity: number[] = [];
+	let isDragging: boolean[] = [];
 
 	// Wheel accumulation for smooth momentum on mousewheel/trackpad
-	let wheelTimeout: (ReturnType<typeof setTimeout> | null)[] = [null, null, null, null];
-	let wheelAccumulator: number[] = [0, 0, 0, 0];
+	let wheelTimeout: (ReturnType<typeof setTimeout> | null)[] = [];
+	let wheelAccumulator: number[] = [];
 
 	function getTargetY(val: number): number {
 		return -(MIDDLE_OFFSET + val) * ITEM_HEIGHT;
@@ -85,7 +94,7 @@
 		const reel = reelRefs[index];
 		if (!reel) return;
 
-		const currentVal = digits[index];
+		const currentVal = digits[index] ?? 0;
 		const absSteps = Math.abs(steps);
 
 		// Calculate destination digit
@@ -213,11 +222,11 @@
 		e.preventDefault();
 		if (isLockedOut || isUnlocked) return;
 
-		wheelAccumulator[index] += e.deltaY;
+		wheelAccumulator[index] = (wheelAccumulator[index] || 0) + e.deltaY;
 		if (wheelTimeout[index]) clearTimeout(wheelTimeout[index]);
 
 		wheelTimeout[index] = setTimeout(() => {
-			const delta = wheelAccumulator[index];
+			const delta = wheelAccumulator[index] || 0;
 			wheelAccumulator[index] = 0;
 			const speed = Math.abs(delta);
 			if (speed < 10) return;
@@ -250,6 +259,18 @@
 	});
 
 	$effect(() => {
+		const targetLen = numDigits;
+		if (digits.length !== targetLen) {
+			untrack(() => {
+				digits = isUnlocked ? getTargetDigits() : Array(targetLen).fill(0);
+				tick().then(() => {
+					digits.forEach((val, i) => setReelPosition(i, val, true));
+				});
+			});
+		}
+	});
+
+	$effect(() => {
 		if (isUnlocked) {
 			untrack(() => {
 				const target = getTargetDigits();
@@ -264,7 +285,7 @@
 
 <div class="flex flex-col items-center select-none w-full">
 	<!-- Mechanical Housing (Neutral and Black colors only) -->
-	<div class="relative w-full max-w-md rounded-2xl border border-neutral-800 bg-neutral-950 p-4 sm:p-5 shadow-[0_20px_40px_rgba(0,0,0,0.9)]">
+	<div class="relative w-full max-w-xl rounded-2xl border border-neutral-800 bg-neutral-950 p-3 sm:p-5 shadow-[0_20px_40px_rgba(0,0,0,0.9)]">
 		<!-- Top Bar: Status Badge only -->
 		<div class="flex items-center justify-between px-1 pb-3">
 			<div class="h-2 w-2 rounded-full border border-neutral-700 bg-neutral-900"></div>
@@ -284,8 +305,8 @@
 			<div class="h-2 w-2 rounded-full border border-neutral-700 bg-neutral-900"></div>
 		</div>
 
-		<!-- 4 Cylinders Chamber Container -->
-		<div class="relative rounded-xl border border-neutral-800 bg-black p-3 sm:p-4 shadow-inner">
+		<!-- Cylinders Chamber Container -->
+		<div class="relative rounded-xl border border-neutral-800 bg-black p-2 sm:p-4 shadow-inner">
 			<!-- Hairline Target Alignment Guide (Dead-Center Read Line) -->
 			<div class="pointer-events-none absolute left-0 right-0 top-1/2 z-20 -translate-y-1/2 flex items-center justify-between px-1">
 				<div class="h-0 w-0 border-y-[5px] border-y-transparent border-l-[7px] border-l-amber-500"></div>
@@ -293,19 +314,22 @@
 				<div class="h-0 w-0 border-y-[5px] border-y-transparent border-r-[7px] border-r-amber-500"></div>
 			</div>
 
-			<!-- Grid of 4 Tumbler Cylinders -->
-			<div class="grid grid-cols-4 gap-2 sm:gap-3.5">
+			<!-- Grid of Tumbler Cylinders -->
+			<div
+				class="grid gap-1 sm:gap-2.5"
+				style="grid-template-columns: repeat({digits.length}, minmax(0, 1fr));"
+			>
 				{#each digits as digit, i}
 					<div class="flex flex-col items-center">
 						<!-- Up Button (Step -1) -->
 						<button
 							type="button"
-							class="btn-tactile mb-2 flex h-9 w-full items-center justify-center rounded-lg border border-neutral-800 bg-neutral-900 text-neutral-400 shadow transition hover:border-amber-500/60 hover:text-amber-300 hover:bg-neutral-800 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+							class="btn-tactile mb-1.5 sm:mb-2 flex h-8 sm:h-9 w-full items-center justify-center rounded-lg border border-neutral-800 bg-neutral-900 text-neutral-400 p-0 shadow transition hover:border-amber-500/60 hover:text-amber-300 hover:bg-neutral-800 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
 							disabled={isLockedOut || isUnlocked}
 							onclick={() => spinWithMomentum(i, -1)}
 							title="Subir dígito"
 						>
-							<ChevronUp size={20} />
+							<ChevronUp size={18} />
 						</button>
 
 						<!-- Cylindrical Rolling Wheel Window (Height 148px shows center number fully + 2 partially visible) -->
@@ -346,7 +370,7 @@
 									{@const num = idx % 10}
 									<div
 										style="height: {ITEM_HEIGHT}px;"
-										class="flex items-center justify-center font-mono text-3xl sm:text-4xl font-black transition-colors {digit === num
+										class="flex items-center justify-center font-mono text-2xl sm:text-3xl font-black transition-colors {digit === num
 											? isUnlocked
 												? 'text-emerald-400 text-glow-green'
 												: 'text-amber-400 text-glow-amber'
@@ -361,12 +385,12 @@
 						<!-- Down Button (Step +1) -->
 						<button
 							type="button"
-							class="btn-tactile mt-2 flex h-9 w-full items-center justify-center rounded-lg border border-neutral-800 bg-neutral-900 text-neutral-400 shadow transition hover:border-amber-500/60 hover:text-amber-300 hover:bg-neutral-800 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+							class="btn-tactile mt-1.5 sm:mt-2 flex h-8 sm:h-9 w-full items-center justify-center rounded-lg border border-neutral-800 bg-neutral-900 text-neutral-400 p-0 shadow transition hover:border-amber-500/60 hover:text-amber-300 hover:bg-neutral-800 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
 							disabled={isLockedOut || isUnlocked}
 							onclick={() => spinWithMomentum(i, 1)}
 							title="Bajar dígito"
 						>
-							<ChevronDown size={20} />
+							<ChevronDown size={18} />
 						</button>
 					</div>
 				{/each}
