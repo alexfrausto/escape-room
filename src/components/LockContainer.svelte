@@ -91,7 +91,7 @@
 			onUnlockSuccess(station);
 			setTimeout(() => {
 				onClose();
-			}, 700);
+			}, 950);
 		} else {
 			audio.play('error');
 			errorMessage = `CÓDIGO INCORRECTO`;
@@ -135,22 +135,27 @@
 
 {#if isOpen && station}
 	{@const isAlreadyUnlocked = $gameStore.unlockedStationIds.includes(station.id)}
+	{@const stationNum = String(stationIndex).padStart(2, '0')}
 	<div
 		role="dialog"
 		aria-modal="true"
-		class="fixed inset-0 z-50 flex flex-col bg-black text-neutral-100 overflow-y-auto"
+		class="fixed inset-0 z-50 flex flex-col mi-grid-bg text-neutral-100 overflow-y-auto"
 	>
 		<!-- Fullscreen Top Header Bar -->
-		<header class="sticky top-0 z-30 flex items-center justify-between border-b border-neutral-800 bg-neutral-950/95 px-4 py-3.5 backdrop-blur-md">
+		<header class="sticky top-0 z-30 flex items-center justify-between border-b border-blue-900/60 bg-[#030714]/95 px-4 py-3.5 backdrop-blur-md shadow-[0_8px_25px_rgba(2,6,23,0.8)]">
 			<div class="flex items-center gap-2.5">
-				<div class="h-2.5 w-2.5 rounded-full {isAlreadyUnlocked ? 'bg-emerald-400 shadow-[0_0_8px_#22c55e]' : 'bg-amber-400 shadow-[0_0_8px_#f59e0b]'}"></div>
-				<span class="font-mono text-sm font-bold tracking-widest text-neutral-200 uppercase">
-					ESTACIÓN 0{stationIndex}
+				<div
+					class="h-2.5 w-2.5 rounded-full {isAlreadyUnlocked
+						? 'bg-emerald-400 shadow-[0_0_10px_#10b981]'
+						: 'animate-pulse bg-sky-400 shadow-[0_0_10px_#38bdf8]'}"
+				></div>
+				<span class="font-tech text-xs sm:text-sm font-extrabold tracking-[0.16em] text-sky-100 uppercase">
+					OBJETIVO {stationNum} <span class="text-sky-400">//</span> ESTACIÓN {stationNum}
 				</span>
 			</div>
 			<button
 				type="button"
-				class="rounded-lg border border-neutral-800 bg-neutral-900 px-3.5 py-1.5 font-mono text-xs font-bold text-neutral-300 hover:border-neutral-700 hover:text-white transition cursor-pointer"
+				class="btn-tactile rounded-md border border-blue-800/80 bg-blue-950/60 px-3.5 py-1.5 font-mono text-xs font-bold text-slate-200 hover:border-sky-400/70 hover:text-white cursor-pointer"
 				onclick={handleClose}
 			>
 				[ ✕ CERRAR ]
@@ -163,19 +168,22 @@
 			class="mx-auto flex flex-1 w-full max-w-lg flex-col justify-center px-4 py-6 space-y-4 my-auto"
 		>
 			<!-- Instruction Header (Mapped by Lock Type in Spanish) -->
-			<div class="rounded-xl border border-neutral-800 bg-neutral-950 p-3.5 text-center shadow-inner">
-				<p class="font-mono text-xs sm:text-sm font-semibold text-neutral-300 leading-relaxed">
+			<div class="hud-box mi-corners {isAlreadyUnlocked ? 'mi-corners-emerald border-emerald-500/45' : 'border-blue-500/40'} rounded-xl border p-3.5 text-center shadow-inner">
+				<div class="mb-1 font-mono text-[10px] font-bold tracking-[0.2em] uppercase {isAlreadyUnlocked ? 'text-emerald-400' : 'text-sky-400'}">
+					{isAlreadyUnlocked ? 'SISTEMA VULNERADO' : 'DIRECTIVA DE CAMPO'}
+				</div>
+				<p class="font-mono text-xs sm:text-sm font-semibold text-slate-200 leading-relaxed">
 					{station.instruction || getLockInstruction(station.type)}
 				</p>
 			</div>
 
 			<!-- Lockout Warning Alert if active -->
 			{#if isLockedOut}
-				<div class="rounded-xl border border-rose-500/80 bg-rose-950/40 px-4 py-3 text-center font-mono text-xs font-bold text-rose-300 animate-pulse shadow-[0_0_15px_rgba(239,68,68,0.3)]">
-					⚠️ CÓDIGO INCORRECTO {lockoutSeconds}s
+				<div class="rounded-xl border border-red-500/80 bg-red-950/50 px-4 py-3 text-center font-mono text-xs font-black tracking-widest text-red-200 text-glow-crimson animate-pulse shadow-[0_0_24px_rgba(239,68,68,0.38)] uppercase">
+					⚠️ ALERTA DE SEGURIDAD // CÓDIGO INCORRECTO ({lockoutSeconds}s)
 				</div>
 			{:else if errorMessage}
-				<div class="rounded-xl border border-rose-500/40 bg-rose-950/20 px-4 py-2.5 text-center font-mono text-xs font-semibold text-rose-400">
+				<div class="rounded-xl border border-red-500/50 bg-red-950/30 px-4 py-2.5 text-center font-mono text-xs font-bold text-red-300">
 					{errorMessage}
 				</div>
 			{/if}
@@ -287,7 +295,7 @@
 						<button
 							type="submit"
 							disabled={isLockedOut || isAlreadyUnlocked || !fallbackInput.trim()}
-							class="w-full rounded-xl border border-amber-600 bg-amber-700 py-3 font-mono text-xs font-bold text-amber-100 hover:bg-amber-600 disabled:opacity-40 transition cursor-pointer shadow-[0_0_15px_rgba(245,158,11,0.25)]"
+							class="btn-tactile mi-btn-primary w-full rounded-xl py-3 font-mono text-xs font-black tracking-widest uppercase disabled:opacity-40 cursor-pointer"
 						>
 							VERIFICAR CÓDIGO
 						</button>

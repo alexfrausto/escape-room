@@ -107,7 +107,7 @@
 <div class="flex flex-col items-center select-none w-full max-w-md mx-auto">
 	<!-- Clean Tactical Housing (Neutral & Black) -->
 	<div
-		class="relative w-full rounded-3xl border border-neutral-800 bg-black p-4 sm:p-5 shadow-[0_25px_60px_rgba(0,0,0,0.95)]"
+		class="hud-box mi-corners relative w-full rounded-2xl border border-blue-500/40 p-4 sm:p-5 shadow-[0_25px_60px_rgba(0,0,0,0.95)]"
 	>
 		<!-- Status Header Bar (No Lock Type Names) -->
 		<div class="flex items-center justify-between pb-3 px-1 text-xs font-mono font-bold">
@@ -220,7 +220,7 @@
 			<button
 				type="submit"
 				disabled={isLockedOut || isUnlocked}
-				class="btn-tactile relative flex w-full items-center justify-center gap-2 rounded-xl border border-amber-600 bg-amber-700 py-4 font-mono text-sm sm:text-base font-black tracking-widest text-amber-100 shadow-[0_0_20px_rgba(245,158,11,0.25)] transition hover:bg-amber-600 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+				class="btn-tactile relative flex w-full items-center justify-center gap-2 rounded-xl py-4 font-mono text-sm sm:text-base font-black tracking-[0.18em] uppercase transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer {isUnlocked ? 'border border-emerald-500/70 bg-emerald-900/70 text-emerald-200 shadow-[0_0_20px_rgba(16,185,129,0.3)]' : 'mi-btn-primary'}"
 			>
 				<span>🔓</span>
 				<span>{isUnlocked ? 'DESBLOQUEADO' : 'DESBLOQUEAR'}</span>

@@ -12,7 +12,7 @@
 	import { audio } from '../services/audio';
 	import { fireVictoryCelebration } from '../services/confetti';
 	import type { StationDefinition } from '../types';
-	import { Camera } from '@lucide/svelte';
+	import { KeyRound, ScanLine, ShieldCheck } from '@lucide/svelte';
 
 	const stations = getAllStations();
 
@@ -66,7 +66,7 @@
 		openStationLock(station);
 	}
 
-	function handleUnlockSuccess(station: StationDefinition) {
+	function handleUnlockSuccess(_station: StationDefinition) {
 		audio.play('success');
 	}
 
@@ -75,58 +75,72 @@
 		audio.play('victory');
 		fireVictoryCelebration();
 	}
-
 </script>
 
 <svelte:head>
-	<title>ESCAPE ROOM</title>
+	<title>MISIÓN IMPOSIBLE // CODEXTEC</title>
 </svelte:head>
 
 {#if !$gameStore.gameStarted}
-	<!-- Registration & Mission Start Screen -->
+	<!-- Registration & Mission Briefing Screen -->
 	<RegistrationPage />
 {:else}
 	<!-- Active Mission Terminal Dashboard -->
-	<div class="flex min-h-screen flex-col bg-black text-neutral-100 crt-overlay">
+	<div class="relative flex min-h-screen flex-col mi-grid-bg text-slate-100 crt-overlay">
+		<!-- Subtle Ambient Cyber Light Beams -->
+		<div class="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
+			<div class="mi-laser-line animate-mi-laser top-[28%] opacity-45" style="--laser-angle: -6deg;"></div>
+			<div class="mi-laser-line animate-mi-laser top-[72%] opacity-35" style="--laser-angle: 5deg; animation-delay: -3.5s;"></div>
+		</div>
+
 		<!-- Fixed / Sticky Header -->
 		<Header onOpenAdmin={() => (isAdminModalOpen = true)} />
 
 		<!-- Main Terminal Body -->
-		<main class="mx-auto flex-1 w-full max-w-4xl px-3 py-4 sm:px-4 sm:py-6 pb-24">
-			<!-- Grand Win Mission Banner (if all 7 unlocked) -->
+		<main class="relative z-10 mx-auto flex-1 w-full max-w-4xl px-3 py-4 sm:px-4 sm:py-6 pb-32">
+			<!-- Grand Win Mission Banner (if all stations unlocked) -->
 			{#if $gameStore.unlockedStationIds.length === stations.length}
-				<div class="mb-5 hud-box overflow-hidden rounded-xl border-2 border-emerald-500 bg-emerald-950/40 p-4 text-center">
-					<div class="flex items-center justify-center gap-2">
-						<span class="text-xl">🏆</span>
-						<span class="font-mono text-sm font-black tracking-widest text-emerald-300 text-glow-green">
-							SE DESBLOQUEARON TODAS LAS ESTACIONES
-						</span>
+				<div class="mb-5 hud-box mi-corners mi-corners-emerald overflow-hidden rounded-xl border border-emerald-400/70 bg-emerald-950/35 p-4 text-center shadow-[0_0_38px_rgba(16,185,129,0.28)]">
+					<div class="flex flex-col items-center justify-center gap-1.5">
+						<div class="flex items-center justify-center gap-2 text-emerald-300">
+							<ShieldCheck size={22} class="text-emerald-400 drop-shadow-[0_0_10px_#10b981]" />
+							<span
+								class="font-glitch mi-glitch text-lg sm:text-xl tracking-[0.18em] text-emerald-300 text-glow-green uppercase"
+								data-text="MISIÓN CUMPLIDA"
+							>
+								MISIÓN CUMPLIDA
+							</span>
+						</div>
+						<p class="font-mono text-[11px] font-bold tracking-widest text-emerald-300/90 uppercase">
+							SE VULNERARON TODAS LAS ESTACIONES DE SEGURIDAD
+						</p>
 					</div>
 				</div>
 			{/if}
 
-			<!-- 7-Station Interactive Responsive Grid -->
+			<!-- Station Interactive Responsive Grid -->
 			<StationGrid {stations} />
 		</main>
 
-		<!-- Persistent Bottom CTA Bar -->
-		<nav class="fixed bottom-0 left-0 right-0 z-30 p-3 backdrop-blur-md">
-			<div class="flex flex-col items-center gap-3 mx-auto max-w-md">
+		<!-- Persistent Bottom Tactical Command Dock -->
+		<nav class="fixed bottom-0 left-0 right-0 z-30 border-t border-blue-900/60 bg-gradient-to-t from-[#020510] via-[#040a1a]/95 to-[#040a1a]/85 px-4 pt-3 pb-4 backdrop-blur-md shadow-[0_-12px_35px_rgba(2,6,23,0.9)]">
+			<div class="mx-auto flex max-w-md flex-col items-center gap-2.5">
 				<button
 					type="button"
 					onclick={openQrScanner}
-					class="flex w-full items-center justify-center gap-3 bg-amber-700/90 p-3 backdrop-blur-md font-mono font-bold text-amber-200 rounded cursor-pointer hover:bg-amber-600 transition" 
+					class="btn-tactile mi-btn-primary font-tech flex w-full items-center justify-center gap-3 rounded-lg py-3.5 px-4 text-sm font-extrabold tracking-[0.18em] uppercase cursor-pointer"
 				>
-					<Camera size={24} />
+					<ScanLine size={20} class="text-sky-200" />
 					<span>ESCANEAR QR</span>
 				</button>
 
-				<button 
-					class="text-xs font-mono underline cursor-pointer text-neutral-300 hover:text-amber-300 transition"
+				<button
+					class="inline-flex items-center gap-1.5 py-1 font-mono text-[11px] font-bold tracking-widest text-slate-400 uppercase hover:text-sky-300 transition cursor-pointer"
 					type="button"
 					onclick={() => (isManualModalOpen = true)}
 				>
-					Accesso Manual
+					<KeyRound size={12} />
+					<span>ACCESO MANUAL</span>
 				</button>
 			</div>
 		</nav>

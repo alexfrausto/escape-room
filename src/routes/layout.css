@@ -1,1 +1,459 @@
 @import 'tailwindcss';
+
+@layer base {
+	:root {
+		color-scheme: dark;
+		--mi-bg: #020510;
+		--mi-surface: #060d20;
+		--mi-surface-elevated: #0b1633;
+		--mi-border: rgba(59, 130, 246, 0.24);
+		--mi-blue: #2563eb;
+		--mi-blue-bright: #3b82f6;
+		--mi-cyan: #38bdf8;
+		--mi-ice: #bae6fd;
+		--mi-teal: #14b8a6;
+		--mi-emerald: #10b981;
+		--mi-crimson: #ef4444;
+	}
+
+	html,
+	body {
+		background-color: var(--mi-bg);
+		color: #e2e8f0;
+		font-family: 'Share Tech Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+		overflow-x: hidden;
+	}
+}
+
+/* ==========================================================================
+   MISIÓN IMPOSIBLE // CYBER-BLUE GLITCH TECH THEME
+   Inspired by electric cobalt, ice-cyan particle streams & sliced glitch type
+   ========================================================================== */
+
+/* Deep Midnight Navy + Bokeh Cyber Particle Field Background */
+.mi-grid-bg {
+	background-color: var(--mi-bg);
+	background-image:
+		radial-gradient(ellipse 75% 48% at 50% 0%, rgba(37, 99, 235, 0.28), transparent 68%),
+		radial-gradient(ellipse 55% 38% at 50% 42%, rgba(20, 184, 166, 0.12), transparent 62%),
+		radial-gradient(ellipse 70% 45% at 50% 105%, rgba(56, 189, 248, 0.16), transparent 65%),
+		radial-gradient(rgba(147, 197, 253, 0.26) 1px, transparent 1px),
+		radial-gradient(rgba(56, 189, 248, 0.16) 1px, transparent 1px),
+		linear-gradient(to right, rgba(59, 130, 246, 0.055) 1px, transparent 1px),
+		linear-gradient(to bottom, rgba(59, 130, 246, 0.055) 1px, transparent 1px);
+	background-size:
+		100% 100%,
+		100% 100%,
+		100% 100%,
+		56px 56px,
+		28px 28px,
+		40px 40px,
+		40px 40px;
+	background-position:
+		0 0,
+		0 0,
+		0 0,
+		0 0,
+		14px 14px,
+		0 0,
+		0 0;
+}
+
+/* Subtle CRT / Cyber HUD Scanlines Overlay */
+.crt-overlay {
+	position: relative;
+}
+
+.crt-overlay::after {
+	content: '';
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: 60;
+	background:
+		repeating-linear-gradient(
+			0deg,
+			rgba(2, 6, 23, 0.2) 0px,
+			rgba(2, 6, 23, 0.2) 1px,
+			transparent 1px,
+			transparent 3px
+		),
+		radial-gradient(circle at center, transparent 54%, rgba(2, 5, 16, 0.72) 100%);
+	opacity: 0.45;
+}
+
+/* ==========================================================================
+   GLITCH-STYLE TECH TYPOGRAPHY
+   ========================================================================== */
+.font-glitch {
+	font-family: 'Rubik Glitch', 'Orbitron', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.font-tech {
+	font-family: 'Orbitron', 'Share Tech Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.mi-glitch {
+	position: relative;
+	display: inline-block;
+	color: #dbeafe;
+	text-shadow:
+		0 0 10px rgba(59, 130, 246, 0.9),
+		0 0 24px rgba(37, 99, 235, 0.75),
+		0 0 42px rgba(56, 189, 248, 0.45);
+	letter-spacing: 0.14em;
+}
+
+.mi-glitch::before,
+.mi-glitch::after {
+	content: attr(data-text);
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	opacity: 0.85;
+}
+
+.mi-glitch::before {
+	color: #38bdf8;
+	text-shadow: -2px 0 rgba(56, 189, 248, 0.9);
+	clip-path: inset(12% 0 58% 0);
+	transform: translateX(-2px);
+	animation: mi-glitch-slice-top 4.2s infinite linear alternate-reverse;
+}
+
+.mi-glitch::after {
+	color: #2563eb;
+	text-shadow: 2px 0 rgba(37, 99, 235, 0.95);
+	clip-path: inset(60% 0 12% 0);
+	transform: translateX(2px);
+	animation: mi-glitch-slice-bottom 3.6s infinite linear alternate-reverse;
+}
+
+/* Subtle horizontal digital cut line through glitch display titles */
+.mi-glitch-cut {
+	position: relative;
+}
+
+.mi-glitch-cut::after {
+	content: '';
+	position: absolute;
+	left: -4%;
+	right: -4%;
+	top: 52%;
+	height: 2px;
+	background: linear-gradient(
+		90deg,
+		transparent 0%,
+		rgba(56, 189, 248, 0.75) 20%,
+		rgba(2, 5, 16, 0.92) 48%,
+		rgba(59, 130, 246, 0.85) 75%,
+		transparent 100%
+	);
+	box-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+	pointer-events: none;
+}
+
+/* Chamfered / Bracketed Cyber HUD Panel */
+.hud-box {
+	position: relative;
+	background: linear-gradient(180deg, rgba(10, 20, 46, 0.9) 0%, rgba(4, 9, 24, 0.96) 100%);
+	box-shadow:
+		0 0 0 1px rgba(96, 165, 250, 0.1) inset,
+		0 20px 50px rgba(0, 0, 0, 0.85),
+		0 0 35px rgba(37, 99, 235, 0.12);
+}
+
+/* Corner reticle brackets for tactical cards and panels */
+.mi-corners {
+	position: relative;
+}
+
+.mi-corners::before,
+.mi-corners::after {
+	content: '';
+	position: absolute;
+	width: 14px;
+	height: 14px;
+	pointer-events: none;
+	z-index: 5;
+	transition: border-color 200ms ease, opacity 200ms ease;
+}
+
+.mi-corners::before {
+	top: -1px;
+	left: -1px;
+	border-top: 2px solid var(--mi-corner-color, rgba(56, 189, 248, 0.85));
+	border-left: 2px solid var(--mi-corner-color, rgba(56, 189, 248, 0.85));
+	border-top-left-radius: 4px;
+}
+
+.mi-corners::after {
+	bottom: -1px;
+	right: -1px;
+	border-bottom: 2px solid var(--mi-corner-color, rgba(56, 189, 248, 0.85));
+	border-right: 2px solid var(--mi-corner-color, rgba(56, 189, 248, 0.85));
+	border-bottom-right-radius: 4px;
+}
+
+.mi-corners-emerald {
+	--mi-corner-color: rgba(16, 185, 129, 0.92);
+}
+
+.mi-corners-amber {
+	--mi-corner-color: rgba(96, 165, 250, 0.9);
+}
+
+.mi-corners-crimson {
+	--mi-corner-color: rgba(239, 68, 68, 0.85);
+}
+
+/* Tactile metallic / spy-hardware button feedback */
+.btn-tactile {
+	transition:
+		transform 120ms cubic-bezier(0.2, 0.8, 0.2, 1),
+		box-shadow 180ms ease,
+		border-color 180ms ease,
+		background-color 180ms ease,
+		color 180ms ease;
+}
+
+.btn-tactile:active:not(:disabled) {
+	transform: scale(0.97);
+}
+
+/* Primary Electric Cobalt -> Ice Cyan Action Button */
+.mi-btn-primary {
+	background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #0284c7 100%);
+	border: 1px solid rgba(147, 197, 253, 0.55);
+	color: #f0f9ff;
+	box-shadow:
+		0 0 26px rgba(37, 99, 235, 0.5),
+		0 0 12px rgba(56, 189, 248, 0.3),
+		0 1px 0 rgba(255, 255, 255, 0.22) inset;
+	text-shadow: 0 1px 4px rgba(2, 6, 23, 0.7);
+}
+
+.mi-btn-primary:hover:not(:disabled) {
+	background: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #0ea5e9 100%);
+	border-color: rgba(186, 230, 253, 0.85);
+	box-shadow:
+		0 0 34px rgba(59, 130, 246, 0.7),
+		0 0 16px rgba(56, 189, 248, 0.5),
+		0 1px 0 rgba(255, 255, 255, 0.3) inset;
+}
+
+/* Text Glow Utilities */
+.text-glow-blue {
+	text-shadow:
+		0 0 10px rgba(59, 130, 246, 0.85),
+		0 0 26px rgba(37, 99, 235, 0.55);
+}
+
+.text-glow-cyan {
+	text-shadow:
+		0 0 10px rgba(56, 189, 248, 0.85),
+		0 0 24px rgba(56, 189, 248, 0.45);
+}
+
+.text-glow-green {
+	text-shadow:
+		0 0 10px rgba(16, 185, 129, 0.75),
+		0 0 24px rgba(16, 185, 129, 0.4);
+}
+
+.text-glow-amber {
+	text-shadow:
+		0 0 10px rgba(245, 158, 11, 0.75),
+		0 0 24px rgba(245, 158, 11, 0.35);
+}
+
+.text-glow-crimson {
+	text-shadow:
+		0 0 10px rgba(239, 68, 68, 0.85),
+		0 0 24px rgba(239, 68, 68, 0.45);
+}
+
+.glow-green {
+	box-shadow: 0 0 14px rgba(16, 185, 129, 0.45);
+}
+
+.glow-blue {
+	box-shadow:
+		0 0 18px rgba(59, 130, 246, 0.5),
+		0 0 36px rgba(37, 99, 235, 0.25);
+}
+
+/* Electric Data-Stream Progress Bar */
+.mi-fuse-fill {
+	position: relative;
+	background: linear-gradient(90deg, #1e3a8a 0%, #2563eb 45%, #38bdf8 86%, #e0f2fe 100%);
+	box-shadow:
+		0 0 14px rgba(59, 130, 246, 0.85),
+		0 0 8px rgba(56, 189, 248, 0.85);
+}
+
+.mi-fuse-fill::after {
+	content: '';
+	position: absolute;
+	right: -3px;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 8px;
+	height: 8px;
+	border-radius: 9999px;
+	background: #ffffff;
+	box-shadow:
+		0 0 8px #e0f2fe,
+		0 0 16px #38bdf8,
+		0 0 26px #2563eb;
+	animation: mi-spark-flicker 0.2s infinite alternate;
+}
+
+.mi-fuse-complete {
+	background: linear-gradient(90deg, #0d9488 0%, #10b981 55%, #6ee7b7 100%);
+	box-shadow: 0 0 16px rgba(16, 185, 129, 0.8);
+}
+
+.mi-fuse-complete::after {
+	display: none;
+}
+
+/* Animated Cyber Light Beams (Ambient Background) */
+.mi-laser-line {
+	position: absolute;
+	height: 1.5px;
+	width: 160%;
+	left: -30%;
+	background: linear-gradient(
+		90deg,
+		transparent 0%,
+		rgba(37, 99, 235, 0.15) 18%,
+		rgba(56, 189, 248, 0.72) 50%,
+		rgba(37, 99, 235, 0.15) 82%,
+		transparent 100%
+	);
+	box-shadow:
+		0 0 12px rgba(56, 189, 248, 0.65),
+		0 0 24px rgba(37, 99, 235, 0.45);
+	pointer-events: none;
+}
+
+/* Optical QR Scanner Cyan-Blue Laser Sweep */
+.mi-scan-laser {
+	position: absolute;
+	left: 6%;
+	right: 6%;
+	height: 2px;
+	background: linear-gradient(
+		90deg,
+		transparent 0%,
+		rgba(59, 130, 246, 0.5) 15%,
+		#7dd3fc 50%,
+		rgba(59, 130, 246, 0.5) 85%,
+		transparent 100%
+	);
+	box-shadow:
+		0 0 12px #38bdf8,
+		0 0 26px rgba(37, 99, 235, 0.8);
+	animation: mi-scanner-sweep 2.2s ease-in-out infinite;
+	pointer-events: none;
+	z-index: 20;
+}
+
+/* Cyber Diagonal Accent Strip */
+.mi-hazard-strip {
+	background: repeating-linear-gradient(
+		-45deg,
+		rgba(59, 130, 246, 0.25),
+		rgba(59, 130, 246, 0.25) 8px,
+		transparent 8px,
+		transparent 16px
+	);
+}
+
+@keyframes mi-spark-flicker {
+	0% {
+		transform: translateY(-50%) scale(0.85);
+		opacity: 0.85;
+	}
+	100% {
+		transform: translateY(-50%) scale(1.25);
+		opacity: 1;
+	}
+}
+
+@keyframes mi-scanner-sweep {
+	0%,
+	100% {
+		top: 12%;
+		opacity: 0.85;
+	}
+	50% {
+		top: 86%;
+		opacity: 1;
+	}
+}
+
+@keyframes mi-laser-drift {
+	0%,
+	100% {
+		transform: translateY(0) rotate(var(--laser-angle, -12deg));
+		opacity: 0.35;
+	}
+	50% {
+		transform: translateY(14px) rotate(var(--laser-angle, -12deg));
+		opacity: 0.72;
+	}
+}
+
+@keyframes mi-glitch-slice-top {
+	0%,
+	86%,
+	100% {
+		transform: translateX(-1.5px);
+		clip-path: inset(12% 0 60% 0);
+	}
+	88% {
+		transform: translateX(-5px);
+		clip-path: inset(20% 0 50% 0);
+	}
+	90% {
+		transform: translateX(3px);
+		clip-path: inset(6% 0 72% 0);
+	}
+	93% {
+		transform: translateX(-2px);
+		clip-path: inset(32% 0 42% 0);
+	}
+}
+
+@keyframes mi-glitch-slice-bottom {
+	0%,
+	82%,
+	100% {
+		transform: translateX(1.5px);
+		clip-path: inset(62% 0 10% 0);
+	}
+	84% {
+		transform: translateX(5px);
+		clip-path: inset(54% 0 18% 0);
+	}
+	87% {
+		transform: translateX(-3px);
+		clip-path: inset(72% 0 6% 0);
+	}
+	90% {
+		transform: translateX(2px);
+		clip-path: inset(48% 0 28% 0);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.mi-fuse-fill::after,
+	.mi-scan-laser,
+	.animate-mi-laser,
+	.mi-glitch::before,
+	.mi-glitch::after {
+		animation: none;
+	}
+}

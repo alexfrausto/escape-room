@@ -285,7 +285,7 @@
 
 <div class="flex flex-col items-center select-none w-full">
 	<!-- Mechanical Housing (Neutral and Black colors only) -->
-	<div class="relative w-full max-w-xl rounded-2xl border border-neutral-800 bg-neutral-950 p-3 sm:p-5 shadow-[0_20px_40px_rgba(0,0,0,0.9)]">
+	<div class="hud-box mi-corners relative w-full max-w-xl rounded-2xl border border-blue-500/40 p-3 sm:p-5 shadow-[0_20px_40px_rgba(0,0,0,0.9)]">
 		<!-- Top Bar: Status Badge only -->
 		<div class="flex items-center justify-between px-1 pb-3">
 			<div class="h-2 w-2 rounded-full border border-neutral-700 bg-neutral-900"></div>
@@ -402,7 +402,7 @@
 			<button
 				type="submit"
 				disabled={isLockedOut || isUnlocked}
-				class="btn-tactile relative flex w-full items-center justify-center gap-2 rounded-xl border border-amber-600 bg-amber-700 py-4 font-mono text-sm sm:text-base font-black tracking-widest text-amber-100 shadow-[0_0_20px_rgba(245,158,11,0.25)] transition hover:bg-amber-600 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+				class="btn-tactile relative flex w-full items-center justify-center gap-2 rounded-xl py-4 font-mono text-sm sm:text-base font-black tracking-[0.18em] uppercase transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer {isUnlocked ? 'border border-emerald-500/70 bg-emerald-900/70 text-emerald-200 shadow-[0_0_20px_rgba(16,185,129,0.3)]' : 'mi-btn-primary'}"
 			>
 				<span>🔓</span>
 				<span>{isUnlocked ? 'DESBLOQUEADO' : 'DESBLOQUEAR'}</span>

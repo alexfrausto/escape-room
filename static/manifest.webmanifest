@@ -1,13 +1,13 @@
 {
-	"name": "ESCAPE ROOM // CYPHER TRACKER",
-	"short_name": "ESCAPE ROOM",
-	"description": "Tactile lock verification terminal for escape rooms",
+	"name": "MISIÓN IMPOSIBLE // CODEXTEC",
+	"short_name": "MISIÓN IMPOSIBLE",
+	"description": "Terminal táctica Misión Imposible para operaciones de escape room",
 	"start_url": "/",
 	"scope": "/",
 	"display": "standalone",
 	"orientation": "portrait",
-	"background_color": "#000000",
-	"theme_color": "#000000",
+	"background_color": "#020510",
+	"theme_color": "#020510",
 	"icons": [
 		{
 			"src": "/favicon.svg",

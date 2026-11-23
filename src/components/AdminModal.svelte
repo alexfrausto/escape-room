@@ -86,19 +86,20 @@
 </script>
 
 {#if isOpen}
-	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-md">
-		<div class="hud-box w-full max-w-md overflow-hidden rounded-xl border border-neutral-700 bg-black shadow-[0_0_50px_rgba(0,0,0,0.8)]">
+	<div class="fixed inset-0 z-50 flex items-center justify-center bg-[#020510]/90 p-4 backdrop-blur-md">
+		<div class="hud-box mi-corners w-full max-w-md overflow-hidden rounded-xl border border-blue-500/45 shadow-[0_0_60px_rgba(37,99,235,0.28)]">
+			<div class="mi-hazard-strip h-1 w-full border-b border-blue-400/30"></div>
 			<!-- Header -->
-			<div class="flex items-center justify-between border-b border-neutral-800 bg-neutral-900/90 px-4 py-3">
+			<div class="flex items-center justify-between border-b border-blue-900/60 bg-[#050c1e]/95 px-4 py-3">
 				<div class="flex items-center gap-2">
-					<span class="h-2 w-2 rounded-full {isAuthenticated ? 'bg-amber-400 shadow-[0_0_8px_#f59e0b]' : 'bg-rose-500 shadow-[0_0_8px_#ef4444]'}"></span>
-					<h2 class="font-mono text-xs font-bold tracking-widest text-neutral-200">
-						ACCESO RESTRINGIDO
+					<span class="h-2 w-2 rounded-full {isAuthenticated ? 'bg-sky-400 shadow-[0_0_8px_#38bdf8]' : 'animate-pulse bg-blue-500 shadow-[0_0_8px_#3b82f6]'}"></span>
+					<h2 class="font-tech text-xs font-extrabold tracking-[0.16em] text-sky-100 uppercase">
+						CONTROL // ACCESO RESTRINGIDO
 					</h2>
 				</div>
 				<button
 					type="button"
-					class="btn-tactile rounded px-2 py-0.5 font-mono text-xs text-neutral-400 hover:text-white cursor-pointer"
+					class="btn-tactile rounded px-2 py-0.5 font-mono text-xs text-slate-400 hover:text-white cursor-pointer"
 					onclick={handleCloseModal}
 				>
 					[ ✕ CERRAR ]
@@ -210,7 +211,7 @@
 							class="btn-tactile flex flex-col items-center justify-center rounded-lg border border-emerald-500/50 bg-emerald-950/40 p-3 text-center hover:bg-emerald-900/40 cursor-pointer"
 							onclick={handleTestWin}
 						>
-							<span class="font-mono text-xs font-bold text-emerald-300">🎉 PROBAR VICTORIA</span>
+							<span class="font-mono text-xs font-bold text-emerald-300">⚡ PROBAR VICTORIA</span>
 							<span class="mt-1 font-mono text-[10px] text-emerald-400">Desbloquear todas y finalizar</span>
 						</button>
 

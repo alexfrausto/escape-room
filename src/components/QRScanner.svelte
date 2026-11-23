@@ -169,19 +169,19 @@
 </script>
 
 {#if isVisible}
-	<div class="fixed inset-0 z-50 flex flex-col bg-black/50 backdrop-blur-md">
+	<div class="fixed inset-0 z-50 flex flex-col bg-[#020510]/92 backdrop-blur-md">
 		<!-- Scanner Top Header -->
-		<div class="flex items-center justify-between border-b border-emerald-800 px-4 py-3">
-			<div class="flex items-center gap-2">
-				<div class="h-2 w-2 animate-ping rounded-full bg-emerald-500"></div>
-				<h2 class="font-mono text-sm font-bold tracking-widest text-emerald-400">
-					ESCANER QR
+		<div class="flex items-center justify-between border-b border-blue-900/60 bg-[#040a1a]/95 px-4 py-3">
+			<div class="flex items-center gap-2.5">
+				<div class="h-2.5 w-2.5 animate-ping rounded-full bg-sky-400"></div>
+				<h2 class="font-tech text-xs sm:text-sm font-extrabold tracking-[0.18em] text-sky-300 text-glow-cyan uppercase">
+					ESCÁNER ÓPTICO
 				</h2>
 			</div>
 
 			<button
 				type="button"
-				class="rounded border border-neutral-700 bg-neutral-900 px-3 py-1 font-mono text-xs font-bold hover:bg-neutral-800 cursor-pointer text-neutral-200"
+				class="btn-tactile rounded-md border border-blue-800/80 bg-blue-950/60 px-3 py-1 font-mono text-xs font-bold text-slate-200 hover:border-sky-400/70 hover:text-white cursor-pointer"
 				onclick={handleClose}
 			>
 				[ ✕ CERRAR ]
@@ -190,19 +190,25 @@
 
 		<!-- Camera Viewport Container -->
 		<div class="relative flex flex-1 flex-col items-center justify-center p-4">
+			<p class="mb-3 font-mono text-[10px] font-bold tracking-[0.2em] text-sky-300/80 uppercase">
+				ALINEA EL CÓDIGO QR DENTRO DE LA RETÍCULA
+			</p>
+
 			<!-- Video element target container -->
-			<div class="hud-box relative max-h-[380px] w-full max-w-[340px] overflow-hidden rounded-lg border-2 border-emerald-500/50 bg-black shadow-[0_0_30px_rgba(34,197,94,0.15)]">
+			<div class="hud-box mi-corners relative max-h-[380px] w-full max-w-[340px] overflow-hidden rounded-xl border border-sky-400/60 bg-black shadow-[0_0_42px_rgba(56,189,248,0.28)]">
+				<!-- Sweeping Cyan-Blue Laser Scan Line -->
+				<div class="mi-scan-laser" aria-hidden="true"></div>
 				<div id={scannerElementId} class="w-full"></div>
 			</div>
 
 			<!-- Status Feedback Notices -->
-			<div class="mt-3 text-center">
+			<div class="mt-4 text-center">
 				{#if scannedFeedback}
-					<p class="font-mono text-xs font-semibold text-rose-400 text-glow-crimson">
+					<p class="rounded-md border border-red-500/50 bg-red-950/40 px-3 py-1.5 font-mono text-xs font-bold text-red-300 text-glow-crimson">
 						{scannedFeedback}
 					</p>
 				{:else if errorMessage}
-					<p class="font-mono text-xs text-amber-400">
+					<p class="rounded-md border border-amber-500/40 bg-amber-950/30 px-3 py-1.5 font-mono text-xs text-amber-300">
 						{errorMessage}
 					</p>
 				{/if}
